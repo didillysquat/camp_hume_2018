@@ -78,7 +78,7 @@ def create_parameter_matrix_fig(data_sheet_path, param_one, param_two):
     # SETUP AXES
     num_ax_cols = len(param_one_list)
     num_ax_rows = len(param_two_list) + 1
-    ax_list, leg_axes = setup_axes(num_ax_cols, num_ax_rows)
+    ax_list, leg_axes, fig = setup_axes(num_ax_cols, num_ax_rows)
 
 
     # Here we have the main data axes popualated, the blank spacer and the legend axes
@@ -95,10 +95,28 @@ def create_parameter_matrix_fig(data_sheet_path, param_one, param_two):
     # PLOT TYPE LEGEND
     plot_type_legend(colour_dict_type, leg_axes, max_n_leg_cols_type, max_n_leg_rows_type, num_leg_cells_type,
                      sorted_type_prof_names_by_local_abund)
+
+
+    # add the labels and text here so that we don't have to debug through all of the plotting each time
+    add_labels(ax_list, leg_axes)
     apples = 'pears'
-    #
-    # # add the labels and text here so that we don't have to debug through all of the plotting each time
-    # add_labels(ax_list, leg_axes, extra_ax_list)
+
+    fig.savefig('its2_results.png')
+    fig.savefig('its2_results.svg')
+
+def add_labels(ax_list, leg_axes):
+    ax_list[0].set_title('lutea')
+    ax_list[1].set_title('pulchra')
+    ax_list[2].set_title('muricata')
+
+    ax_list[0].set_ylabel('mangrove_lagoon', fontsize='large')
+    ax_list[3].set_ylabel('far_reef', fontsize='large')
+    ax_list[6].set_ylabel('near_reef', fontsize='large')
+
+    leg_axes[0].set_xlabel('sequence')
+    leg_axes[1].set_xlabel('ITS2 type profile')
+
+
 
 def plot_type_legend(colour_dict_type, leg_axes, max_n_cols_type, max_n_rows_type, num_leg_cells_type,
                      sorted_type_prof_names_by_local_abund, string_cut_off=10):
@@ -309,7 +327,7 @@ def setup_axes(max_n_cols, max_n_rows):
         ax = plt.Subplot(fig, temp_grid_spec_subplot_leg[i])
         leg_axes.append(ax)
         fig.add_subplot(ax)
-    return ax_list, leg_axes
+    return ax_list, leg_axes, fig
 
 
 def process_div_df(path_to_tab_delim_count_DIV, num_leg_cells):
@@ -530,8 +548,9 @@ def plot_data_axes(param_list_one, param_list_two, ax_list, colour_dict_div, col
                    smp_name_to_smp_id_dict, sp_output_df_div, sp_output_df_type, param_one, param_two):
     ax_count = 0
     extra_ax_count = 0
-    for param_two_cat in param_list_two:
-        for param_one_cat in param_list_one:
+    # I'm going to hard code these so that we always get them in the same order
+    for param_two_cat in ['mangrove_lagoon', 'far_reef', 'near_reef']:
+        for param_one_cat in ['lutea', 'pulchra', 'muricata']:
 
             ax = ax_list[ax_count]
             patches_list = []
@@ -603,7 +622,7 @@ def plot_data_axes(param_list_one, param_list_two, ax_list, colour_dict_div, col
                                             num_smp_in_this_subplot=num_smp_in_this_subplot,
                                             patches_list=patches_list,
                                             x_tick_label_list=x_tick_label_list,
-                                            max_num_smpls_in_subplot=10)
+                                            max_num_smpls_in_subplot=20)
 
             ax_count += 1
 
